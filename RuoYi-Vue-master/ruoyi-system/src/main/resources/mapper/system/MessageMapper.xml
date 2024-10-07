@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.MessageMapper">
+
+    <resultMap type="Message" id="MessageResult">
+        <result property="handle"    column="handle"    />
+        <result property="sendUser"    column="send_user"    />
+        <result property="receiveUser"    column="receive_user"    />
+        <result property="content"    column="content"    />
+        <result property="isRead"    column="is_read"    />
+        <result property="createTime"    column="create_time"    />
+    </resultMap>
+
+    <sql id="selectMessageVo">
+        select handle, send_user, receive_user, content, is_read, create_time from message
+    </sql>
+
+    <select id="selectMessageList" parameterType="Message" resultMap="MessageResult">
+        <include refid="selectMessageVo"/>
+        <where>
+            <if test="sendUser != null  and sendUser != ''"> and send_user = #{sendUser}</if>
+            <if test="receiveUser != null  and receiveUser != ''"> and receive_user = #{receiveUser}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+            <if test="isRead != null "> and is_read = #{isRead}</if>
+        </where>
+    </select>
+
+    <select id="selectMessageByHandle" parameterType="String" resultMap="MessageResult">
+        <include refid="selectMessageVo"/>
+        where handle = #{handle}
+    </select>
+    <select id="selectBySendUserAndReceiveUserLimitLength" resultMap="MessageResult">
+        <include refid="selectMessageVo"/>
+        where send_user=#{sendUser} and receive_user =#{receiveUser}
+    </select>
+
+
+    <insert id="insertMessage" parameterType="Message">
+        insert into message
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="handle != null">handle,</if>
+            <if test="sendUser != null">send_user,</if>
+            <if test="receiveUser != null">receive_user,</if>
+            <if test="content != null">content,</if>
+            <if test="isRead != null">is_read,</if>
+            <if test="createTime != null">create_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="handle != null">#{handle},</if>
+            <if test="sendUser != null">#{sendUser},</if>
+            <if test="receiveUser != null">#{receiveUser},</if>
+            <if test="content != null">#{content},</if>
+            <if test="isRead != null">#{isRead},</if>
+            <if test="createTime != null">#{createTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateMessage" parameterType="Message">
+        update message
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sendUser != null">send_user = #{sendUser},</if>
+            <if test="receiveUser != null">receive_user = #{receiveUser},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="isRead != null">is_read = #{isRead},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+        </trim>
+        where handle = #{handle}
+    </update>
+
+    <delete id="deleteMessageByHandle" parameterType="String">
+        delete from message where handle = #{handle}
+    </delete>
+
+    <delete id="deleteMessageByHandles" parameterType="String">
+        delete from message where handle in
+        <foreach item="handle" collection="array" open="(" separator="," close=")">
+            #{handle}
+        </foreach>
+    </delete>
+</mapper>

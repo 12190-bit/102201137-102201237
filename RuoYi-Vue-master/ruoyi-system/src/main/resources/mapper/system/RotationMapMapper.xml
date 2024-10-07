@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.RotationMapMapper">
+
+    <resultMap type="com.ruoyi.system.domain.RotationMap" id="RotationMapResult">
+        <result property="id"    column="id"    />
+        <result property="imgUrl"    column="img_url"    />
+        <result property="title"    column="title"    />
+        <result property="createDate"    column="create_date"    />
+        <result property="extend1"    column="extend1"    />
+        <result property="extend2"    column="extend2"    />
+        <result property="extend3"    column="extend3"    />
+        <result property="extend4"    column="extend4"    />
+    </resultMap>
+
+    <sql id="selectRotationMapVo">
+        select id, img_url, title, create_date, extend1, extend2, extend3, extend4 from rotation_map
+    </sql>
+
+    <select id="selectRotationMapList" parameterType="com.ruoyi.system.domain.RotationMap" resultMap="RotationMapResult">
+        <include refid="selectRotationMapVo"/>
+        <where>
+            <if test="imgUrl != null  and imgUrl != ''"> and img_url = #{imgUrl}</if>
+            <if test="title != null  and title != ''"> and title = #{title}</if>
+            <if test="createDate != null "> and create_date = #{createDate}</if>
+        </where>
+    </select>
+
+    <select id="selectRotationMapById" parameterType="Long" resultMap="RotationMapResult">
+        <include refid="selectRotationMapVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertRotationMap" parameterType="com.ruoyi.system.domain.RotationMap" useGeneratedKeys="true" keyProperty="id">
+        insert into rotation_map
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="imgUrl != null">img_url,</if>
+            <if test="title != null">title,</if>
+            <if test="createDate != null">create_date,</if>
+            <if test="extend1 != null">extend1,</if>
+            <if test="extend2 != null">extend2,</if>
+            <if test="extend3 != null">extend3,</if>
+            <if test="extend4 != null">extend4,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="imgUrl != null">#{imgUrl},</if>
+            <if test="title != null">#{title},</if>
+            <if test="createDate != null">#{createDate},</if>
+            <if test="extend1 != null">#{extend1},</if>
+            <if test="extend2 != null">#{extend2},</if>
+            <if test="extend3 != null">#{extend3},</if>
+            <if test="extend4 != null">#{extend4},</if>
+         </trim>
+    </insert>
+
+    <update id="updateRotationMap" parameterType="com.ruoyi.system.domain.RotationMap">
+        update rotation_map
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="imgUrl != null">img_url = #{imgUrl},</if>
+            <if test="title != null">title = #{title},</if>
+            <if test="createDate != null">create_date = #{createDate},</if>
+            <if test="extend1 != null">extend1 = #{extend1},</if>
+            <if test="extend2 != null">extend2 = #{extend2},</if>
+            <if test="extend3 != null">extend3 = #{extend3},</if>
+            <if test="extend4 != null">extend4 = #{extend4},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRotationMapById" parameterType="Long">
+        delete from rotation_map where id = #{id}
+    </delete>
+
+    <delete id="deleteRotationMapByIds" parameterType="String">
+        delete from rotation_map where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
